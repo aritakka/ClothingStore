@@ -1,0 +1,18 @@
+﻿<UserControl x:Class="ClothingStore.Views.Controls.ProductCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Height="100" Width="Auto" Margin="0,4,0,4">
+    <Border CornerRadius="6" BorderBrush="#DDD" BorderThickness="1" Padding="8">
+        <Grid ColumnDefinitions="100,*,Auto" >
+            <Image Source="{Binding ImagePath}" Width="88" Height="88" Stretch="Uniform" />
+            <StackPanel Grid.Column="1" Margin="8,0,8,0" VerticalAlignment="Center">
+                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14"/>
+                <TextBlock Text="{Binding Size}" Foreground="Gray"/>
+            </StackPanel>
+            <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
+                <TextBlock Text="{Binding Price, StringFormat=C}" FontWeight="Bold" HorizontalAlignment="Right"/>
+                <Button Content="Add" Width="60" Margin="0,8,0,0" Click="BtnAdd_Click" Style="{StaticResource PrimaryButton}"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>
