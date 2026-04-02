@@ -2,6 +2,7 @@
 using ClothingStore.Models;
 
 namespace ClothingStore.Data;
+
 public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> opts) : base(opts) { }

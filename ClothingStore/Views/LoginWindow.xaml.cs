@@ -1,39 +1,27 @@
 ﻿using System.Windows;
-using ClothingStore.Services;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace ClothingStore.Views;
-public partial class LoginWindow : Window
+namespace ClothingStore.Views
 {
-    private readonly AuthService _auth;
-    public LoginWindow(AuthService auth)
+    public partial class LoginWindow : Window
     {
-        InitializeComponent();
-        _auth = auth;
-    }
+        public LoginWindow()
+        {
+            InitializeComponent();
+        }
 
-    private async void BtnLogin_Click(object sender, RoutedEventArgs e)
-    {
-        btnLogin.IsEnabled = false;
-        var email = txtEmail.Text.Trim();
-        var password = txtPassword.Password;
-
-        var user = await _auth.LoginAsync(email, password);
-        if (user != null)
+        private void BtnLogin_Click(object sender, RoutedEventArgs e)
         {
             var main = App.AppHost.Services.GetRequiredService<MainWindow>();
             main.Show();
-            Close();
+            this.Close();
         }
-        else
-        {
-            MessageBox.Show("Неверные данные", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
-            btnLogin.IsEnabled = true;
-        }
-    }
 
-    private void BtnRegister_Click(object sender, RoutedEventArgs e)
-    {
-        var reg = App.AppHost.Services.GetRequiredService<RegisterWindow>();
-        reg.ShowDialog();
+        private void BtnRegister_Click(object sender, RoutedEventArgs e)
+        {
+            var reg = App.AppHost.Services.GetRequiredService<RegisterWindow>();
+            reg.Owner = this;
+            reg.ShowDialog();
+        }
     }
 }

@@ -3,6 +3,7 @@ using ClothingStore.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ClothingStore.Services;
+
 public class ProductService
 {
     private readonly AppDbContext _db;

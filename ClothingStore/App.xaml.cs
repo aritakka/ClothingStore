@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,25 +11,25 @@ namespace ClothingStore;
 
 public partial class App : Application
 {
-    public static IHost AppHost { get; private set; }
+    public static IHost AppHost { get; private set; } = null!;
 
     public App()
     {
+        InitializeComponent();
+
         AppHost = Host.CreateDefaultBuilder()
             .ConfigureAppConfiguration((ctx, cfg) =>
             {
-                cfg.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+                cfg.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
             })
             .ConfigureServices((ctx, services) =>
             {
-                var conn = ctx.Configuration.GetConnectionString("DefaultConnection");
+                var conn = ctx.Configuration.GetConnectionString("DefaultConnection") ?? "Server=(local);Database=ClothingStore;Trusted_Connection=True;";
                 services.AddDbContext<AppDbContext>(options => options.UseSqlServer(conn));
 
-                // Services
                 services.AddTransient<AuthService>();
                 services.AddTransient<ProductService>();
 
-                // Windows (register as transient or singleton depending on desired lifetime)
                 services.AddSingleton<LoginWindow>();
                 services.AddSingleton<RegisterWindow>();
                 services.AddSingleton<MainWindow>();

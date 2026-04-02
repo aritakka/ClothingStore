@@ -1,25 +1,25 @@
-﻿using System.Windows;
-using ClothingStore.Services;
+﻿using System.Collections.ObjectModel;
+using System.Windows;
 using ClothingStore.Models;
 
 namespace ClothingStore.Views;
+
 public partial class MainWindow : Window
 {
-    private readonly ProductService _productService;
-    public MainWindow(ProductService productService)
+    public ObservableCollection<Product> Products { get; } = new();
+
+    public MainWindow()
     {
         InitializeComponent();
-        _productService = productService;
-        Loaded += MainWindow_Loaded;
+
+        Products.Add(new Product { Id = 1, Name = "T-Shirt", Size = "M", Price = 19.99m });
+        Products.Add(new Product { Id = 2, Name = "Jeans", Size = "L", Price = 49.99m });
+
+        DataContext = Products;
     }
 
-    private async void MainWindow_Loaded(object? sender, RoutedEventArgs e)
+    private void BtnRefresh_Click(object sender, RoutedEventArgs e)
     {
-        lvProducts.ItemsSource = await _productService.GetAllAsync();
-    }
-
-    private async void BtnRefresh_Click(object sender, RoutedEventArgs e)
-    {
-        lvProducts.ItemsSource = await _productService.GetAllAsync();
+        MessageBox.Show("Refresh (stub).");
     }
 }
