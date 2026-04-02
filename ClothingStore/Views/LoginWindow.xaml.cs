@@ -9,7 +9,7 @@ namespace ClothingStore.Views
         {
             InitializeComponent();
         }
-
+        
         private void BtnLogin_Click(object sender, RoutedEventArgs e)
         {
             var main = App.AppHost.Services.GetRequiredService<MainWindow>();
