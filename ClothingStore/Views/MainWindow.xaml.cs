@@ -12,8 +12,8 @@ namespace ClothingStore.Views
         public MainWindow(ProductService productService, UserState userState)
         {
             InitializeComponent();
-            _productService = productService;
-            _userState = userState;
+            _productService = productService ?? throw new ArgumentNullException(nameof(productService));
+            _userState = userState ?? throw new ArgumentNullException(nameof(userState));
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)

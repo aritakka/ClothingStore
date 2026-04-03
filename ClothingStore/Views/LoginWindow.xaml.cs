@@ -1,5 +1,4 @@
-﻿using ClothingStore.Models;
-using ClothingStore.Services;
+﻿using ClothingStore.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Windows;
@@ -14,8 +13,8 @@ namespace ClothingStore.Views
         public LoginWindow(AuthService auth, UserState userState)
         {
             InitializeComponent();
-            _auth = auth;
-            _userState = userState;
+            _auth = auth ?? throw new ArgumentNullException(nameof(auth));
+            _userState = userState ?? throw new ArgumentNullException(nameof(userState));
         }
 
         private async void BtnLogin_Click(object sender, RoutedEventArgs e)
@@ -42,6 +41,7 @@ namespace ClothingStore.Views
                 _userState.SetUser(user);
 
                 var main = App.AppHost.Services.GetRequiredService<MainWindow>();
+                Application.Current.MainWindow = main;
                 main.Show();
                 this.Close();
             }

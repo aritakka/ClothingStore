@@ -1,27 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using ClothingStore.Models;
+using ClothingStore.Services;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace ClothingStore.Views
 {
-    /// <summary>
-    /// Логика взаимодействия для ProductWindow.xaml
-    /// </summary>
     public partial class ProductWindow : Window
     {
-        public ProductWindow()
+        private readonly ProductService _productService;
+
+        public ProductWindow(ProductService productService)
         {
             InitializeComponent();
+            _productService = productService;
+            this.Loaded += async (_, __) => await LoadProductsAsync();
+        }
+
+        private async Task LoadProductsAsync()
+        {
+            try
+            {
+                var products = await _productService.GetAllAsync();
+                lvProducts.ItemsSource = products;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Не удалось загрузить продукты: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private async void BtnRefresh_Click(object sender, RoutedEventArgs e)
+        {
+            await LoadProductsAsync();
+        }
+
+        private void BtnAdd_Click(object sender, RoutedEventArgs e)
+        {
+            var add = App.AppHost.Services.GetRequiredService<AddProductWindow>();
+            add.Owner = this;
+            var res = add.ShowDialog();
+            if (res == true)
+            {
+                _ = LoadProductsAsync();
+            }
         }
     }
 }
