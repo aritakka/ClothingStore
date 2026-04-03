@@ -2,7 +2,14 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:models="clr-namespace:ClothingStore.Models"
+             xmlns:conv="clr-namespace:ClothingStore.Converters"
              Height="100" Width="Auto" Margin="0,4,0,4">
+
+    <UserControl.Resources>
+        <!-- Конвертер для корректной обработки null и пустых ImagePath -->
+        <conv:NullableImageConverter x:Key="NullableImageConverter"/>
+    </UserControl.Resources>
+
     <Border CornerRadius="6" BorderBrush="#DDD" BorderThickness="1" Padding="8">
         <Grid>
             <Grid.ColumnDefinitions>
@@ -11,12 +18,13 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <!-- Image с защитой от null -->
+            <!-- Изображение с конвертером -->
             <Image Width="88" Height="88" Stretch="Uniform"
-                   Source="{Binding ImagePath, FallbackValue=''}">
+                   Source="{Binding ImagePath, Converter={StaticResource NullableImageConverter}}">
                 <Image.Style>
                     <Style TargetType="Image">
                         <Style.Triggers>
+                            <!-- Скрываем картинку, если ImagePath = null или пустой -->
                             <DataTrigger Binding="{Binding ImagePath}" Value="{x:Null}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
                             </DataTrigger>
