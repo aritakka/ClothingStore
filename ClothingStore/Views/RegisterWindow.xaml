@@ -4,7 +4,7 @@
         Title="Register" Height="320" Width="360" ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner">
     <Window.Resources>
-        <!-- относительный путь из папки Views к папке Resources -->
+        <!-- относительный путь из Views к корню -->
         <ResourceDictionary Source="../Resources/Styles.xaml"/>
     </Window.Resources>
 

@@ -4,6 +4,7 @@
         Title="Login" Height="240" Width="360" ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen">
     <Window.Resources>
+        <!-- LoginWindow находится в Views, Resources в корне -->
         <ResourceDictionary Source="../Resources/Styles.xaml"/>
     </Window.Resources>
 
