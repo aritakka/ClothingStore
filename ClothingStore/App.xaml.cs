@@ -24,15 +24,19 @@ public partial class App : Application
             })
             .ConfigureServices((ctx, services) =>
             {
-                var conn = ctx.Configuration.GetConnectionString("DefaultConnection") ?? "Server=(local);Database=ClothingStore;Trusted_Connection=True;";
+                var conn = ctx.Configuration.GetConnectionString("DefaultConnection")
+                           ?? "Server=(localdb)\\mssqllocaldb;Database=ClothingStoreDb;Trusted_Connection=True;";
+
                 services.AddDbContext<AppDbContext>(options => options.UseSqlServer(conn));
 
-                services.AddTransient<AuthService>();
-                services.AddTransient<ProductService>();
+                services.AddScoped<AuthService>();
+                services.AddScoped<ProductService>();
 
-                services.AddSingleton<LoginWindow>();
-                services.AddSingleton<RegisterWindow>();
-                services.AddSingleton<MainWindow>();
+                services.AddSingleton<UserState>(); // <-- добавлено
+
+                services.AddTransient<LoginWindow>();
+                services.AddTransient<RegisterWindow>();
+                services.AddTransient<MainWindow>();
             })
             .Build();
     }
@@ -48,6 +52,7 @@ public partial class App : Application
     protected override async void OnExit(ExitEventArgs e)
     {
         await AppHost.StopAsync();
+        AppHost.Dispose(); // освобождаем ресурсы
         base.OnExit(e);
     }
 }

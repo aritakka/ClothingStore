@@ -1,25 +1,48 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
 using System.Windows;
-using ClothingStore.Models;
+using ClothingStore.Services;
 
-namespace ClothingStore.Views;
-
-public partial class MainWindow : Window
+namespace ClothingStore.Views
 {
-    public ObservableCollection<Product> Products { get; } = new();
-
-    public MainWindow()
+    public partial class MainWindow : Window
     {
-        InitializeComponent();
+        private readonly ProductService _productService;
+        private readonly UserState _userState;
 
-        Products.Add(new Product { Id = 1, Name = "T-Shirt", Size = "M", Price = 19.99m });
-        Products.Add(new Product { Id = 2, Name = "Jeans", Size = "L", Price = 49.99m });
+        public MainWindow(ProductService productService, UserState userState)
+        {
+            InitializeComponent();
+            _productService = productService;
+            _userState = userState;
+        }
 
-        DataContext = Products;
-    }
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (_userState.CurrentUser != null)
+                    this.Title = $"Clothing Store — {_userState.CurrentUser.FullName}";
 
-    private void BtnRefresh_Click(object sender, RoutedEventArgs e)
-    {
-        MessageBox.Show("Refresh (stub).");
+                var products = await _productService.GetAllAsync();
+                lvProducts.ItemsSource = products;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Не удалось загрузить продукты: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private async void BtnRefresh_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var products = await _productService.GetAllAsync();
+                lvProducts.ItemsSource = products;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Не удалось обновить список: " + ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
     }
 }

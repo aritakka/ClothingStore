@@ -11,18 +11,15 @@ public class AuthService
     private readonly AppDbContext _db;
     public AuthService(AppDbContext db) => _db = db;
 
-    // PBKDF2 simple helper
     private static string HashPassword(string password)
     {
         using var rng = RandomNumberGenerator.Create();
         byte[] salt = new byte[16];
         rng.GetBytes(salt);
-
         using var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 100_000, HashAlgorithmName.SHA256);
         byte[] key = pbkdf2.GetBytes(32);
-
         var result = new byte[1 + salt.Length + key.Length];
-        result[0] = 0; // version
+        result[0] = 0;
         Buffer.BlockCopy(salt, 0, result, 1, salt.Length);
         Buffer.BlockCopy(key, 0, result, 1 + salt.Length, key.Length);
         return Convert.ToBase64String(result);
@@ -36,7 +33,6 @@ public class AuthService
         Buffer.BlockCopy(data, 1, salt, 0, salt.Length);
         byte[] storedKey = new byte[32];
         Buffer.BlockCopy(data, 1 + salt.Length, storedKey, 0, storedKey.Length);
-
         using var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 100_000, HashAlgorithmName.SHA256);
         byte[] key = pbkdf2.GetBytes(32);
         return CryptographicOperations.FixedTimeEquals(key, storedKey);
@@ -55,8 +51,16 @@ public class AuthService
         };
 
         _db.Users.Add(user);
-        await _db.SaveChangesAsync();
-        return (true, null);
+        try
+        {
+            await _db.SaveChangesAsync();
+            return (true, null);
+        }
+        catch (DbUpdateException ex)
+        {
+            // возможен конфликт уникального индекса
+            return (false, "Ошибка БД: " + ex.Message);
+        }
     }
 
     public async Task<User?> LoginAsync(string email, string password)
