@@ -31,6 +31,7 @@ public partial class App : Application
 
                 services.AddScoped<AuthService>();
                 services.AddScoped<ProductService>();
+                services.AddScoped<CartService>();
 
                 services.AddSingleton<UserState>(); // <-- добавлено
 

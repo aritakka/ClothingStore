@@ -1,21 +1,50 @@
-﻿using System.Windows;
+﻿using ClothingStore.Models;
+using ClothingStore.Services;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Windows;
 using System.Windows.Controls;
-using ClothingStore.Models;
 
-namespace ClothingStore.Views.Controls;
-
-public partial class ProductCard : UserControl
+namespace ClothingStore.Views.Controls
 {
-    public ProductCard()
+    public partial class ProductCard : UserControl
     {
-        InitializeComponent();
-    }
+        public ProductCard()
+        {
+            InitializeComponent();
+        }
 
-    private void BtnAdd_Click(object sender, RoutedEventArgs e)
-    {
-        if (DataContext is Product p)
-            MessageBox.Show($"Added to cart: {p.Name} (stub).");
-        else
-            MessageBox.Show("Added to cart (stub).");
+        private async void BtnAdd_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Клик работает"); // тестируем, что кнопка ловится
+
+            try
+            {
+                var product = this.DataContext as Product;
+
+                if (product == null)
+                {
+                    MessageBox.Show("Product = null");
+                    return;
+                }
+
+                var cartService = App.AppHost.Services.GetRequiredService<CartService>();
+                var userState = App.AppHost.Services.GetRequiredService<UserState>();
+
+                if (userState.CurrentUser == null)
+                {
+                    MessageBox.Show("Пользователь не найден");
+                    return;
+                }
+
+                await cartService.AddToCartAsync(product.Id, userState.CurrentUser.Id);
+
+                MessageBox.Show($"Добавлено: {product.Name}");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка: {ex.Message}");
+            }
+        }
     }
 }

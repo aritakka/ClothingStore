@@ -11,11 +11,25 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <Image Source="{Binding ImagePath}" Width="88" Height="88" Stretch="Uniform" />
+            <!-- Image с защитой от null -->
+            <Image Width="88" Height="88" Stretch="Uniform"
+                   Source="{Binding ImagePath, FallbackValue=''}">
+                <Image.Style>
+                    <Style TargetType="Image">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ImagePath}" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Image.Style>
+            </Image>
+
             <StackPanel Grid.Column="1" Margin="8,0,8,0" VerticalAlignment="Center">
                 <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14"/>
                 <TextBlock Text="{Binding Size}" Foreground="Gray"/>
             </StackPanel>
+
             <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
                 <TextBlock Text="{Binding Price, StringFormat=C}" FontWeight="Bold" HorizontalAlignment="Right"/>
                 <Button Content="Add" Width="60" Margin="0,8,0,0" Click="BtnAdd_Click" Style="{StaticResource PrimaryButton}"/>

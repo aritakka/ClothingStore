@@ -30,7 +30,6 @@
 
 	<ItemGroup>
 		<Folder Include="Views\Controls\" />
-		<Folder Include="Services\" />
 	</ItemGroup>
 
 </Project>
